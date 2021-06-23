@@ -32,8 +32,10 @@ mean_nake = []
 mean_e_nake = []
 for index in range(len(hist_name)):
     hist=file.Get("%s_full"%(hist_name[index]))
-    mean_nake.append(hist.GetMean())
-    mean_e_nake.append(hist.GetRMS()/sqrt(hist.GetEntries()*1.0))
+    hist.Fit("gaus")
+    func = hist.GetFunction("gaus")
+    mean_nake.append(func.GetParameter(1))
+    mean_e_nake.append(func.GetParError(1))
 file.Close()
 print(mean_nake)
 print(mean_e_nake)
