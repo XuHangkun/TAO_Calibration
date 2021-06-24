@@ -18,7 +18,6 @@ import pickle
 from math import sqrt
 from config.RadioactiveSourcesConfig import radioactive_sources_info
 import copy
-from math import sqrt
 
 shadowing_info = copy.deepcopy(radioactive_sources_info)
 
@@ -85,6 +84,7 @@ ymove[0] -= 0.002
 hist_name=["Cs137","Mn54","Ge68","K40","Co60","nH $\gamma$","AmC $\gamma$"]
 for x,y,z,t,s in zip(energies,bias,xmove,ymove,hist_name):
     plt.text(x+z,y+t,s,fontsize=8)
+
 #plt.xscale("log")
 plt.ylim(-0.16,0.06)
 plt.savefig("./data/fig/shadowing.pdf")
