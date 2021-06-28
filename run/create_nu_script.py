@@ -7,7 +7,7 @@ from tqdm import trange
 
 parser = argparse.ArgumentParser(description="Generate scripts which can be use to create the ideal nonuniformity of different particles with different energies.")
 parser.add_argument("--energies",type=float,nargs='+',default=[1,4,8])
-parser.add_argument("--particle",type=int,default=11)
+parser.add_argument("--particle",default="e-")
 parser.add_argument("--particle_name",default="electron")
 parser.add_argument("--script_dir",default="scripts/electron")
 parser.add_argument("--sim_data_dir",default="nonuniformity/electron")
@@ -33,7 +33,7 @@ for i in trange(41):
             output = os.path.join(now_path,args.sim_data_dir)
             out_file_name = "%s_%.1fMeV_theta%d_r%d.root"%(args.particle_name,energy,theta_degree,int(radius))
             output = os.path.join(output,out_file_name)
-            temp = "python %s --particles %d --momentums %.1f --evtmax 10000 --seed 7 --positions %d %d %d --momentums-interp KineticEnergy --run %s --output %s"%(run_spy,args.particle,energy,x,-2450,z,mac,output)
+            temp = "python %s --particles %s --momentums %.1f --evtmax 1000 --seed 7 --positions %d %d %d --momentums-interp KineticEnergy --run %s --output %s"%(run_spy,args.particle,energy,x,-2450,z,mac,output)
             spt_output = os.path.join(now_path,args.script_dir)
             file = open(os.path.join(spt_output,"run_%s_%.1fMeV_theta%d_r%d.sh"%(args.particle_name,energy,theta_degree,int(radius))),"w")
             file.write("#!/bin/bash\n")
