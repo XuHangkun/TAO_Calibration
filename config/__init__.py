@@ -1,1 +1,1 @@
-from .RadioactiveSourcesConfig import radioactive_sources_info
+from .RadioactiveSourcesConfig import radioactive_sources_infofrom .DetectorConfig import detector_info

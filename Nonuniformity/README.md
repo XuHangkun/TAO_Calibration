@@ -9,3 +9,12 @@ $ # evaluate the effect of particle type and energy
 $ ./ipynb/compare_ideal_nonuniformity.ipynb
 $ # fig will be saved at data/paper_fig/compare_ideal_nonuniformity
 ```
+
+### **Update resolution**
+```bash
+$ # add all effect
+$ python3 electron_resolution.py --add_dark_noise --add_sipm_charge_resoluton --add_cross_talk \
+$ --output_fig ../paper_fig/resolution/resolution_all.pdf --output_csv ../paper_fig/resolution/resolution_all.csv
+$ # no electronic effect
+$ python3 electron_resolution.py
+```

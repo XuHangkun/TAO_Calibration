@@ -44,25 +44,18 @@ radioactive_sources_info = {
         "nonlin_calib_time":3600*10,
         "n_gamma":2
     },
-    "amc_n_prompt":{
+    "n_prompt":{
         "total_gamma_e":6.13,
         "mean_gamma_e":6.13,
         "activity":0.16,
         "nonlin_calib_time":3600*10,
         "n_gamma":1
     },
-    "amc_n_delay":{
+    "n_delay":{
         "total_gamma_e":2.22,
         "mean_gamma_e":2.22,
         "activity":0.2,
         "nonlin_calib_time":3600*10,
-        "n_gamma":1
-    },
-    "nc_gamma":{
-        "total_gamma_e":3.746,
-        "mean_gamma_e":3.746,
-        "activity":10,
-        "nonlin_calib_time":3600,
         "n_gamma":1
     }
 }
