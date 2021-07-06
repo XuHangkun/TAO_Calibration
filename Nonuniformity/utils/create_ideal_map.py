@@ -31,10 +31,10 @@ def create_ideal_nonuniformity_map(pos_data,file_dir,energy=1.0,particle="electr
     pos_data = copy.deepcopy(pos_data)
     pos_data = pos_data[pos_data["energy"]==energy].reset_index(drop = True)
     middle_value = 1.
-    data = TAOData([os.path.join(file_dir,"%s_%.1fMeV_theta0_r0.root"%(particle,energy))])
-    full_edep_hist = data.GetFullEdepHit()
-    scale = full_edep_hist.GetMean()
-    del full_edep_hist
+    files = os.listdir(file_dir)
+    data = TAOData([ os.path.join(file_dir,f) for f in files if "%s_%.1fMeV_theta0_r0"%(particle,energy) in f])
+    scale = data.GetFullEdepHitMean()
+    del data
     n_point = 0
     val_info = {"radius":[],"theta":[],"ratio":[]}
     for i in trange(len(pos_data)):
@@ -42,14 +42,17 @@ def create_ideal_nonuniformity_map(pos_data,file_dir,energy=1.0,particle="electr
         if radius > radius_cut:
             continue
         theta = pos_data["theta"][i]
-        file_name = "%s_%.1fMeV_theta%d_r%d.root"%(particle,energy,theta,radius)
-        file_path = os.path.join(file_dir,file_name)
-        data = TAOData([file_path])
-        full_edep_hist = data.GetFullEdepHit()
+        file_name = "%s_%.1fMeV_theta%d_r%d"%(particle,energy,theta,radius)
+        files = os.listdir(file_dir)
+        data = TAOData([ os.path.join(file_dir,f) for f in files if file_name in f])
+        if particle == "positron":
+            full_edep_hist_mean = data.GetFullEdepHitMean(add_edep=0.511*2)
+        else:
+            full_edep_hist_mean = data.GetFullEdepHitMean()
         val_info["radius"].append(radius)
         val_info["theta"].append(theta)
-        val_info["ratio"].append(full_edep_hist.GetMean()/scale)
-        del full_edep_hist
+        val_info["ratio"].append(full_edep_hist_mean/scale)
+        del data
     interp = LinearNDInterpolator(list(zip(val_info["radius"],val_info["theta"])),val_info["ratio"])
     return interp
 
@@ -61,7 +64,7 @@ def test():
     import argparse
     import pickle as pkl
     parser = argparse.ArgumentParser(description="Create ideal nonuniformity map")
-    parser.add_argument("--radius_cut",type=float,default=700)
+    parser.add_argument("--radius_cut",type=float,default=680)
     parser.add_argument("--output",default=os.path.join(os.getenv("TAO_CALIB_PATH"),"Nonuniformity/data/map/ideal_nonuniformity.pkl"))
     parser.add_argument("--input_dir",default=os.path.join(os.getenv("TAO_CALIB_PATH"),"change_data/nonuniformity/electron"))
     parser.add_argument("--pos_file",default=os.path.join(os.getenv("TAO_CALIB_PATH"),"change_data/nonuniformity/ideal_nonuniformity_map_pos.csv"))
