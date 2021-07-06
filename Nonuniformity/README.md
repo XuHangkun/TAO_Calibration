@@ -25,3 +25,9 @@ $ python3 electron_resolution.py
 $ # find suitable calibration points and save the info
 $ python3 optimize_calib_points.py --optimize_times 0
 ```
+
+### **Particle energy reconstruction**
+```bash
+$ # reconstruct particle energy
+$ python3 energy_reconstruction.py
+```
