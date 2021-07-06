@@ -24,6 +24,7 @@ from utils.create_new_map import get_map_with_calib_points,create_init_points
 from utils.create_new_map import xyz2rthetaphi,rthetaphi2xyz
 from math import sqrt,pow
 import matplotlib.pyplot as plt
+from utils.eval_map import diff_mean,diff_rms
 
 def shake_calib_points(calib_points,anchor_1,anchor_2,
         max_radius=850,min_distance=20
@@ -129,6 +130,12 @@ save_map_fig(optimized_map,
 save_diff_map_fig(optimized_map,tao_ideal_map,
     "./data/optimize/diff_map_by_ideal_calib_points.pdf"
     )
+
+# print the diff index
+mean_diff = diff_mean(optimized_map.func,tao_ideal_map.func)
+rms_diff = diff_rms(optimized_map.func,tao_ideal_map.func)
+print("Mean diff : %.5f"%(mean_diff))
+print("Std diff : %.5f"%(rms_diff))
 
 # save data in root file
 if args.save_root_file:
