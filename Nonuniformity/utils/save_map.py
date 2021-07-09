@@ -4,7 +4,16 @@ import numpy as np
 import pandas as pd
 
 # save fig use plt
-def save_map_fig(map_trg,title,output_path,radius_cut=850):
+def save_map_fig(map_trg,title,output_path,radius_cut=850,calib_type="point"):
+    """save the map to pdf
+
+    Args:
+        map_trg : the map you want to save
+        title   : title if the fig
+        output_path : path of fig
+        radius_cut : the limit of the map to be show
+        calib_type : point or line
+    """
     xx = np.linspace(0,radius_cut,50)
     yy = np.linspace(0,180,50)
     xx,yy = np.meshgrid(xx,yy)
@@ -12,13 +21,25 @@ def save_map_fig(map_trg,title,output_path,radius_cut=850):
     fig = plt.figure(figsize=(10,6))
     plt.pcolormesh(xx,yy,zz)
     plt.colorbar()
-    plt.scatter(np.array(map_trg.radius),np.array(map_trg.theta),color="red")
+    if calib_type == "point":
+        plt.scatter(np.array(map_trg.radius),np.array(map_trg.theta),color="red")
+    else:
+        plt.plot(np.array(map_trg.radius),np.array(map_trg.theta),color="red")
     plt.xlabel("$R [mm]$",fontsize=14)
     plt.ylabel("$\\theta [\degree]$",fontsize=14)
     plt.title(title,fontsize=16)
     plt.savefig(output_path)
 
-def save_diff_map_fig(map_trg,map_ref,output_path,radius_cut=800):
+def save_diff_map_fig(map_trg,map_ref,output_path,radius_cut=800,calib_type="point"):
+    """save the map to pdf
+
+    Args:
+        map_trg : the map you want to save
+        title   : title if the fig
+        output_path : path of fig
+        radius_cut : the limit of the map to be show
+        calib_type : point or line
+    """
     xx = np.linspace(0,radius_cut,50)
     yy = np.linspace(0,180,50)
     info = {"x":[],"y":[],"ratio":[]}
@@ -36,7 +57,10 @@ def save_diff_map_fig(map_trg,map_ref,output_path,radius_cut=800):
     fig = plt.figure(figsize=(10,6))
     plt.pcolormesh(xx,yy,zz,shading='auto')
     plt.colorbar()
-    plt.scatter(np.array(map_trg.radius),np.array(map_trg.theta),color="red")
+    if calib_type == "point":
+        plt.scatter(np.array(map_trg.radius),np.array(map_trg.theta),color="red")
+    else:
+        plt.plot(np.array(map_trg.radius),np.array(map_trg.theta),color="red")
     plt.xlabel("$R [mm]$",fontsize=14)
     plt.ylabel("$\\theta [\degree]$",fontsize=14)
     plt.title("$(g_{calib}(r,\\theta)-g_{ref}(r,\\theta))/g_{ref}(r,\\theta)$ [%]",fontsize=16)

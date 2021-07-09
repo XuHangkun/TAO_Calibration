@@ -287,8 +287,10 @@ class TaoNonunMap:
                 edepz += r_r*cos(r_theta)
             true_hit = data.GetAttr("fNSiPMHit")
             radius = sqrt(edepx*edepx+edepy*edepy+edepz*edepz)
+            if radius < 1.e-10:
+                radius = 1.e-10
             theta = 180*acos(edepz/radius)/3.1415926
-            phi = 180*acos(edepx/sqrt(edepx*edepx+edepy*edepy))/3.1415926
+            phi = 180*acos(edepx/sqrt(1.e-10+edepx*edepx+edepy*edepy))/3.1415926
             # should do vertex smear here ~~~
             # pass
             if edepy < 0:

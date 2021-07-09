@@ -12,6 +12,8 @@ import pandas as pd
 from utils.TaoNonunMapScipy import TaoNonunMap
 import ROOT
 import argparse
+from utils.save_map import save_map_fig
+from utils.save_map import save_diff_map_fig
 import os
 import copy
 import sys
@@ -54,11 +56,11 @@ def scan_optim(chi2_func,
     return df
 
 parser = argparse.ArgumentParser(description="energy reconstruction")
-parser.add_argument("--nonuniformity_map",default="data/true_nonuni.csv")
+parser.add_argument("--nonuniformity_map",default="data/map/true_nonuni.csv")
 parser.add_argument("--max_radius",default=650,type=float)
 parser.add_argument("--no_symmetry",action="store_true")
 parser.add_argument("--mode",default="scan_pars",choices=["scan_pars","use_default","migrad"])
-parser.add_argument("--best_pars",nargs="+",default=[49.9,156.9,83.8])
+parser.add_argument("--best_pars",nargs="+",default=[102.5,155.2,151.7])
 parser.add_argument("--output_best_calib_map_csv",default="./data/map/ideal_calib_map.csv")
 parser.add_argument("--output_best_calib_map_gr",default="./data/map/ideal_calib_map.root")
 parser.add_argument("--output_difference",default="./data/ideal_calib_map_diff.root")
@@ -66,10 +68,12 @@ parser.add_argument("--output_chi2check",default="./data/chi2_check.root")
 args = parser.parse_args()
 print(args)
 
+# define ideal map and chi2
 tao_ideal_map = TaoNonunMap(pd.read_csv(args.nonuniformity_map),symmetry=False)
 optimize_chi2 = AnchorOptimizeChi2(tao_ideal_map,symmetry = not args.no_symmetry,
         max_radius=args.max_radius)
 
+# define the optim process
 if args.mode == "scan_pars":
     # scan pars roughly
     df = scan_optim(optimize_chi2,n=50000)
@@ -92,6 +96,7 @@ else:
     value = args.best_pars
     error = [0,0,0]
 
+# create new map according to anchor position
 print(value)
 print(error)
 value = list(value)
@@ -106,6 +111,18 @@ new_map.save_2d_graph(args.output_best_calib_map_gr)
 
 # save the map
 new_map.save_map(args.output_best_calib_map_csv)
+
+save_map_fig(new_map,
+    "$g_{calib}(r,\\theta)$",
+    "./data/optimize/nonuniformity_map_by_ideal_calib_line.pdf",
+    calib_type="point"
+    )
+
+save_diff_map_fig(new_map,tao_ideal_map,
+    "./data/optimize/diff_map_by_ideal_calib_line.pdf",
+    calib_type="point"
+    )
+
 
 # save the difference
 r_file = ROOT.TFile(args.output_difference,"recreate")
@@ -128,7 +145,7 @@ canvas.Write()
 r_file.Close()
 
 # scan the parameters
-if True:
+if False:
     r_file = ROOT.TFile("./data/diff_scan.root","recreate")
     par_name = ["theta_1","theta_2","phi_2"]
     for i in range(len(value)):
@@ -184,7 +201,7 @@ if True:
 
 
 # chi2
-if True:
+if False:
     par_name = ["theta_1","theta_2","phi_2"]
     par_delta = [3,3,3]
     n_slice=10
